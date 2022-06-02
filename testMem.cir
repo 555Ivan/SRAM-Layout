@@ -1,0 +1,62 @@
+
+
+* File includes subcircuits and technology definitions
+.include ./SRAM_bits.cir
+
+
+*this cell emulates load from SRAM cells,
+* Number refers to the load from than number of cells
+.subckt memLoad ttt fff number=254
+Xnt ttt gnd dead nn ww='number*5'
+Xnf fff gnd dead nn ww='number*5'
+.ends memLoad
+
+
+
+
+*********begin: topLevel*****
+
+* Parameters
+.global gnd vdd
+.param gnd=0
+
+
+*********begin: topLevel*****
+.param per = 5ns
+.param lw=10
+.param wirew=3
+
+
+*DC supplies
+vdd vdd 0 'supply'
+Xclok clk               dat1 period='0.5*per' total=1 duty=0.5 sz=120
+Xdii dii                dat1 period='per' start='per' total=3 duty=1
+Xbit  ad0               dat1 period='per' start='0.5*per' total=3 duty=1
+Xde   ope ad0 clk decModel size=20
+
+* hardwire rdw signal to gnd
+Xwr bt0 bf0 dii gnd clk write1
+Xw0 bt0 bt1 bf0 bf1     wire_dual len='lw' wid='wirew'
+
+* Place memory cell at end of wire
+* First make sure it works with short wire and few memory cells
+* View on plotter 
+*v(ope), v(dii)
+*v(la:ff) v(la:tt)
+*v(bf1) and v(bt1)
+Xla bt1 bf1 ope         mem1 m=1
+Xmd bt1 bf1             memLoad number =25
+
+
+
+
+
+
+
+.tran 1p 25n
+
+
+
+
+
+

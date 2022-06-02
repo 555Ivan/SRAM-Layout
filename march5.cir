@@ -1,0 +1,33 @@
+
+
+*official class wire model. 
+.subckt wire iot iof len=10 wid=10
+.param rr=0.4
+.param cc = '100e-15'
+rt iot iof 'rr*len*50/(wid)'
+cf iof  0  'cc*len*wid*50/1e6'
+
+.ends
+
+.subckt wire_dual lt rt lf rf len=10 wid=10
+Xt lt rt wire len='len' wid='wid'
+Xf lf rf wire len='len' wid='wid'
+.ends
+
+
+
+.subckt readSub btt bff set rst rdw clk sz=100 beta=2
+.ends readSub
+
+.subckt readcollect dot st3 rs3 st2 rs2 st1 rs1 st0 rs0 sz=30 beta=2
+.ends readcollect
+
+
+.subckt subblock set rst add din rdw clk lw=1000 wirew=5
+Xwr bt1 bf1 din rdw clk writeSub
+Xw1 bt1 btt bf1 bff     wire_dual len='lw' wid='wirew'
+Xmd btt bff             memLoad number =31
+Xla btt bff clk         mem1
+Xrd btt bff set rst rdw clk readSub
+.ends subblock
+

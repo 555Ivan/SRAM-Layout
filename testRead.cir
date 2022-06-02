@@ -1,0 +1,60 @@
+
+
+* File includes subcircuits and technology definitions
+.include ./SRAM_bits.cir
+
+
+*this cell emulates load from SRAM cells,
+* Number refers to the load from than number of cells
+.subckt memLoad ttt fff number=254
+Xnt ttt gnd dead nn ww='number*5'
+Xnf fff gnd dead nn ww='number*5'
+.ends memLoad
+
+
+
+
+*********begin: topLevel*****
+
+* Parameters
+.global gnd vdd
+.param gnd=0
+
+
+*********begin: topLevel*****
+.param per = 5ns
+.param lw=500
+.param wirew=3
+
+
+*DC supplies
+vdd vdd 0 'supply'
+
+Xclok clk               dat1 period='per' start='per' total=1 duty=0.5 sz=120
+Xrdwr rdw               dat1 period='per' start='per' total=2 duty=1
+Xdii dii                dat1 period='per' start='per' total=3 duty=1
+
+
+* vary
+.param dip=0.05
+Vt bt2  0  PULSE('supply''supply-dip' 'per' 10p 10p '2*per' '4*per')
+Vf bf2  0  PULSE('supply-dip''supply' 'per' 10p 10p '2*per' '4*per')
+
+Xbit  ad0               dat1 period='per' start='0.5*per' total=3 duty=1
+Xde ope ad0 clk decModel size=20
+
+
+Xrd bt2 bf2 dot vdd clk read1
+
+
+.ic v(dot)=0
+
+
+
+.tran 1p 50n
+
+
+
+
+
+

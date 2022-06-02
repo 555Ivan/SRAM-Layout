@@ -1,4 +1,4 @@
-# SRAM Layout Project
+# 256-bit SRAM Layout Project
 Originally a school assignment. It required an SRAM layout and circuit files used to optimize bitlines and transistors (only for all the other supporting componenets because SRAM transistor size was a constraint) for maximum performance and minimal space occupied. Used a 50nm CMOS model from CMOSedu.com.
 
 # SRAM cell layout image
